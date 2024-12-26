@@ -4,8 +4,10 @@ import { NewsContent } from '../components/news/NewsContent';
 import { CardStack } from '../components/CardStack';
 import { useNewsNavigation } from '../hooks/useNewsNavigation';
 import type { NewsDetailScreenProps } from '../types/navigation';
+import { useNavigation } from '@react-navigation/native';
 
 const NewsDetail = ({ route }: NewsDetailScreenProps) => {
+  const navigation = useNavigation();
   const { newsItems, index } = route.params;
 
   const {
@@ -21,6 +23,10 @@ const NewsDetail = ({ route }: NewsDetailScreenProps) => {
     newsItems,
     initialIndex: index,
   });
+
+  const handleSwipeRight = () => {
+    navigation.goBack();
+  };
 
   if (!currentItem) return null;
 
@@ -41,6 +47,7 @@ const NewsDetail = ({ route }: NewsDetailScreenProps) => {
         }}
         onSwipeUp={handleSwipeUp}
         onSwipeDown={handleSwipeDown}
+        onSwipeRight={handleSwipeRight}
         currentIndex={currentIndex}
         isTransitioning={isTransitioning}
         onTransitionEnd={handleTransitionEnd}

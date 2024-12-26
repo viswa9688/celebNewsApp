@@ -9,6 +9,7 @@ interface CardStackProps {
   prevItem?: CardItem;
   onSwipeUp: () => void;
   onSwipeDown: () => void;
+  onSwipeRight: () => void;
   currentIndex: number;
   isTransitioning: boolean;
   onTransitionEnd: () => void;
@@ -22,6 +23,7 @@ export const CardStack: React.FC<CardStackProps> = ({
   prevItem,
   onSwipeUp,
   onSwipeDown,
+  onSwipeRight,
   currentIndex,
   isTransitioning,
   onTransitionEnd,
@@ -59,6 +61,7 @@ export const CardStack: React.FC<CardStackProps> = ({
         <SwipeableCard
           onSwipeUp={onSwipeUp}
           onSwipeDown={onSwipeDown}
+          onSwipeRight={onSwipeRight}
           canSwipeUp={canSwipeUp}
           canSwipeDown={canSwipeDown}
           index={currentIndex}

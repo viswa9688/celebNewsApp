@@ -10,6 +10,8 @@ interface SwipeableCardProps {
   canSwipeUp?: boolean;
   canSwipeDown?: boolean;
   children: React.ReactNode;
+  onAnimationComplete?: () => void;
+  onSwipeRight?: () => void;
 }
 
 const SwipeableCard: React.FC<SwipeableCardProps> = ({
@@ -18,6 +20,7 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
   canSwipeUp,
   canSwipeDown,
   children,
+  onSwipeRight,
 }) => {
   const lastSwipeTime = useRef(Date.now());
 
@@ -26,7 +29,10 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
     const timeSinceLastSwipe = now - lastSwipeTime.current;
 
     if (event.nativeEvent.state === State.END && timeSinceLastSwipe > 300) {
-      if (event.nativeEvent.translationY < -100 && canSwipeUp) {
+      if (event.nativeEvent.translationX > 100) {
+        onSwipeRight && onSwipeRight();
+        lastSwipeTime.current = now;
+      } else if (event.nativeEvent.translationY < -100 && canSwipeUp) {
         onSwipeUp && onSwipeUp();
         lastSwipeTime.current = now;
       } else if (event.nativeEvent.translationY > 100 && canSwipeDown) {
