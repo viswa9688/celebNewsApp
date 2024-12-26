@@ -44,6 +44,8 @@ const NewsDetail = ({ route }: NewsDetailScreenProps) => {
         currentIndex={currentIndex}
         isTransitioning={isTransitioning}
         onTransitionEnd={handleTransitionEnd}
+        canSwipeUp={currentIndex < newsItems.length - 1}
+        canSwipeDown={currentIndex > 0}
       />
     </View>
   );

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { NewsItem } from '../types';
+import { NewsItem } from '../types';
 
 interface UseNewsNavigationProps {
   newsItems: NewsItem[];
@@ -7,44 +7,38 @@ interface UseNewsNavigationProps {
 }
 
 export const useNewsNavigation = ({ newsItems, initialIndex }: UseNewsNavigationProps) => {
-  const [currentIndex, setCurrentIndex] = useState<number>(initialIndex);
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const currentItem = newsItems[currentIndex];
-  const nextItem = currentIndex < newsItems.length - 1
-    ? newsItems[currentIndex + 1]
-    : undefined;
-  const prevItem = currentIndex > 0
-    ? newsItems[currentIndex - 1]
-    : undefined;
+  const nextItem = currentIndex < newsItems.length - 1 ? newsItems[currentIndex + 1] : undefined;
+  const prevItem = currentIndex > 0 ? newsItems[currentIndex - 1] : undefined;
 
   const handleSwipeUp = useCallback(() => {
-    if (nextItem && !isTransitioning) {
+    if (currentIndex < newsItems.length - 1) {
       setIsTransitioning(true);
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prevIndex) => prevIndex + 1);
     }
-  }, [nextItem, isTransitioning]);
+  }, [currentIndex, newsItems.length]);
 
   const handleSwipeDown = useCallback(() => {
-    if (prevItem && !isTransitioning) {
+    if (currentIndex > 0) {
       setIsTransitioning(true);
-      setCurrentIndex(prev => prev - 1);
+      setCurrentIndex((prevIndex) => prevIndex - 1);
     }
-  }, [prevItem, isTransitioning]);
+  }, [currentIndex]);
 
   const handleTransitionEnd = useCallback(() => {
-    requestAnimationFrame(() => {
-      setIsTransitioning(false);
-    });
+    setIsTransitioning(false);
   }, []);
 
   return {
-    currentIndex,
     currentItem,
     nextItem,
     prevItem,
     handleSwipeUp,
     handleSwipeDown,
+    currentIndex,
     isTransitioning,
     handleTransitionEnd,
   };
