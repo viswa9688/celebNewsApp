@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import React, { useRef } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 
 interface SwipeableCardProps {
   index: number;
@@ -9,7 +9,6 @@ interface SwipeableCardProps {
   onSwipeDown?: () => void;
   canSwipeUp?: boolean;
   canSwipeDown?: boolean;
-  onAnimationComplete?: () => void;
   children: React.ReactNode;
 }
 
@@ -20,19 +19,25 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
   canSwipeDown,
   children,
 }) => {
-  // Implement swipe logic here using PanGestureHandler or similar
+  const lastSwipeTime = useRef(Date.now());
+
+  const handleGestureEvent = (event: any) => {
+    const now = Date.now();
+    const timeSinceLastSwipe = now - lastSwipeTime.current;
+
+    if (event.nativeEvent.state === State.END && timeSinceLastSwipe > 300) {
+      if (event.nativeEvent.translationY < -100 && canSwipeUp) {
+        onSwipeUp && onSwipeUp();
+        lastSwipeTime.current = now;
+      } else if (event.nativeEvent.translationY > 100 && canSwipeDown) {
+        onSwipeDown && onSwipeDown();
+        lastSwipeTime.current = now;
+      }
+    }
+  };
 
   return (
-    <PanGestureHandler
-      onGestureEvent={(event) => {
-        // Handle swipe gestures
-        if (event.nativeEvent.translationY < -50 && canSwipeUp) {
-          onSwipeUp && onSwipeUp();
-        } else if (event.nativeEvent.translationY > 50 && canSwipeDown) {
-          onSwipeDown && onSwipeDown();
-        }
-      }}
-    >
+    <PanGestureHandler onHandlerStateChange={handleGestureEvent}>
       <View style={styles.card}>
         {children}
       </View>
@@ -53,10 +58,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-  },
-  text: {
-    fontSize: 16,
-    color: '#333',
   },
 });
 
