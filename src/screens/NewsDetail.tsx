@@ -7,34 +7,56 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { useRoute } from '@react-navigation/native';
 import { useNews } from '../context/NewsContext';
 import VideoOverlay from '../components/VideoOverlay';
+import { useSwipeNavigation } from '../hooks/useSwipeNavigation';
+import type { NewsDetailScreenProps } from '../types/navigation';
 
-const NewsDetail = () => {
-  const route = useRoute();
+const NewsDetail: React.FC<NewsDetailScreenProps> = ({ route, navigation }) => {
   const { id } = route.params;
-  const { getNewsItem } = useNews();
+  const { getNewsItem, newsItems } = useNews();
   const newsItem = getNewsItem(id);
+
+  const getCurrentIndex = () => newsItems.findIndex(item => item.id === id);
+
+  const navigateToNews = (index: number) => {
+    if (index >= 0 && index < newsItems.length) {
+      navigation.setParams({ id: newsItems[index].id });
+    }
+  };
+
+  const handleSwipeUp = () => {
+    const nextIndex = getCurrentIndex() + 1;
+    navigateToNews(nextIndex);
+  };
+
+  const handleSwipeDown = () => {
+    const prevIndex = getCurrentIndex() - 1;
+    navigateToNews(prevIndex);
+  };
+
+  const panResponder = useSwipeNavigation(handleSwipeUp, handleSwipeDown);
 
   if (!newsItem) return null;
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: newsItem.imageUrl }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-        {newsItem.isVideo && <VideoOverlay />}
-      </View>
-      <View style={styles.content}>
-        <Text style={styles.title}>{newsItem.title}</Text>
-        <Text style={styles.description}>{newsItem.description}</Text>
-        <Text style={styles.fullContent}>{newsItem.fullContent}</Text>
-      </View>
-    </ScrollView>
+    <View style={styles.container} {...panResponder.panHandlers}>
+      <ScrollView bounces={false}>
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: newsItem.imageUrl }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+          {newsItem.isVideo && <VideoOverlay />}
+        </View>
+        <View style={styles.content}>
+          <Text style={styles.title}>{newsItem.title}</Text>
+          <Text style={styles.description}>{newsItem.description}</Text>
+          <Text style={styles.fullContent}>{newsItem.fullContent}</Text>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -44,7 +66,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   imageContainer: {
-    position: 'relative',
     height: Dimensions.get('window').height * 0.4,
   },
   image: {
@@ -56,7 +77,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: 'bold',
     color: '#1a1a1a',
     marginBottom: 12,
   },

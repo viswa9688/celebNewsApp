@@ -4,24 +4,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import NewsFeed from './src/screens/NewsFeed';
 import NewsDetail from './src/screens/NewsDetail';
 import { NewsProvider } from './src/context/NewsContext';
+import { defaultScreenOptions } from './src/navigation/config';
+import type { RootStackParamList } from './src/types/navigation';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
     <NewsProvider>
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: '#fff',
-            },
-            headerTintColor: '#FF2D55',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-          }}
-        >
+        <Stack.Navigator screenOptions={defaultScreenOptions}>
           <Stack.Screen 
             name="NewsFeed" 
             component={NewsFeed} 

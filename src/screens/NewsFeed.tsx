@@ -1,11 +1,10 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useNews } from '../context/NewsContext';
 import NewsCard from '../components/NewsCard';
+import type { NewsFeedScreenProps } from '../types/navigation';
 
-const NewsFeed = () => {
-  const navigation = useNavigation();
+const NewsFeed: React.FC<NewsFeedScreenProps> = ({ navigation }) => {
   const { newsItems } = useNews();
 
   const handlePress = (id: string) => {
