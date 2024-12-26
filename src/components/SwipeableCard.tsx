@@ -1,148 +1,63 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedStyle,
-  withSpring,
-  useSharedValue,
-  runOnJS,
-  withTiming,
-  Easing,
-} from 'react-native-reanimated';
-
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const SWIPE_THRESHOLD = SCREEN_HEIGHT * 0.2;
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 
 interface SwipeableCardProps {
-  children: React.ReactNode;
+  index: number;
+  isBackground?: boolean;
   onSwipeUp?: () => void;
   onSwipeDown?: () => void;
   canSwipeUp?: boolean;
   canSwipeDown?: boolean;
-  index: number;
-  isBackground?: boolean;
   onAnimationComplete?: () => void;
+  children: React.ReactNode;
 }
 
-export const SwipeableCard: React.FC<SwipeableCardProps> = ({
-  children,
+const SwipeableCard: React.FC<SwipeableCardProps> = ({
   onSwipeUp,
   onSwipeDown,
-  canSwipeUp = true,
-  canSwipeDown = true,
-  index,
-  isBackground = false,
-  onAnimationComplete,
+  canSwipeUp,
+  canSwipeDown,
+  children,
 }) => {
-  const translateY = useSharedValue(0);
-  const scale = useSharedValue(isBackground ? 0.95 : 1);
-  const opacity = useSharedValue(isBackground ? 0.8 : 1);
-
-  useEffect(() => {
-    translateY.value = withSpring(0, {
-      damping: 20,
-      stiffness: 300,
-    });
-    scale.value = withSpring(isBackground ? 0.95 : 1, {
-      damping: 20,
-      stiffness: 300,
-    });
-    opacity.value = withTiming(isBackground ? 0.8 : 1, {
-      duration: 200,
-    }, () => {
-      if (onAnimationComplete) {
-        runOnJS(onAnimationComplete)();
-      }
-    });
-  }, [index, isBackground]);
-
-  const gesture = Gesture.Pan()
-    .activeOffsetY([-10, 10])
-    .onUpdate((event) => {
-      if ((!canSwipeUp && event.translationY < 0) ||
-        (!canSwipeDown && event.translationY > 0)) {
-        return;
-      }
-      translateY.value = event.translationY;
-
-      const progress = Math.abs(event.translationY) / SCREEN_HEIGHT;
-      opacity.value = 1 - progress * 0.3;
-      scale.value = 1 - progress * 0.05;
-    })
-    .onEnd((event) => {
-      const velocity = event.velocityY;
-      const isQuickSwipe = Math.abs(velocity) > 1000;
-
-      if ((translateY.value < -SWIPE_THRESHOLD || (isQuickSwipe && velocity < 0)) && canSwipeUp) {
-        translateY.value = withSpring(-SCREEN_HEIGHT, {
-          velocity,
-          damping: 50,
-          stiffness: 300,
-        }, () => {
-          if (onSwipeUp) {
-            runOnJS(onSwipeUp)();
-          }
-        });
-      } else if ((translateY.value > SWIPE_THRESHOLD || (isQuickSwipe && velocity > 0)) && canSwipeDown) {
-        translateY.value = withSpring(SCREEN_HEIGHT, {
-          velocity,
-          damping: 50,
-          stiffness: 300,
-        }, () => {
-          if (onSwipeDown) {
-            runOnJS(onSwipeDown)();
-          }
-        });
-      } else {
-        translateY.value = withSpring(0, {
-          damping: 20,
-          stiffness: 300,
-        });
-        scale.value = withSpring(isBackground ? 0.95 : 1, {
-          damping: 20,
-          stiffness: 300,
-        });
-        opacity.value = withTiming(isBackground ? 0.8 : 1, {
-          duration: 200
-        });
-      }
-    });
-
-  const rStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateY: translateY.value },
-      { scale: scale.value }
-    ],
-    opacity: opacity.value,
-  }));
+  // Implement swipe logic here using PanGestureHandler or similar
 
   return (
-    <View style={styles.container}>
-      <GestureDetector gesture={gesture}>
-        <Animated.View style={[styles.card, rStyle]}>
-          {children}
-        </Animated.View>
-      </GestureDetector>
-    </View>
+    <PanGestureHandler
+      onGestureEvent={(event) => {
+        // Handle swipe gestures
+        if (event.nativeEvent.translationY < -50 && canSwipeUp) {
+          onSwipeUp && onSwipeUp();
+        } else if (event.nativeEvent.translationY > 50 && canSwipeDown) {
+          onSwipeDown && onSwipeDown();
+        }
+      }}
+    >
+      <View style={styles.card}>
+        {children}
+      </View>
+    </PanGestureHandler>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   card: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
     backgroundColor: 'white',
     borderRadius: 8,
-    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
     elevation: 5,
   },
+  text: {
+    fontSize: 16,
+    color: '#333',
+  },
 });
+
+export default React.memo(SwipeableCard);

@@ -26,6 +26,22 @@ const mockData: NewsItem[] = [
     isVideo: false,
     fullContent: 'Deepika Padukone has launched her own sustainable fashion line, focusing on contemporary Indian wear with a modern twist. The collection features eco-friendly materials and traditional craftsmanship.',
   },
+  {
+    id: '4',
+    title: 'Samantha  Fashion Line Launch',
+    description: 'Bollywood actress ventures into sustainable fashion with new clothing line.',
+    imageUrl: 'https://picsum.photos/800/602',
+    isVideo: false,
+    fullContent: 'Deepika Padukone has launched her own sustainable fashion line, focusing on contemporary Indian wear with a modern twist. The collection features eco-friendly materials and traditional craftsmanship.',
+  },
+  {
+    id: '5',
+    title: 'Ranveer Padukone Fashion Line Launch',
+    description: 'Bollywood actress ventures into sustainable fashion with new clothing line.',
+    imageUrl: 'https://picsum.photos/800/602',
+    isVideo: false,
+    fullContent: 'Deepika Padukone has launched her own sustainable fashion line, focusing on contemporary Indian wear with a modern twist. The collection features eco-friendly materials and traditional craftsmanship.',
+  },
 ];
 
 interface NewsContextType {

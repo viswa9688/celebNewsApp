@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CardItem } from '../types';
-import { SwipeableCard } from './SwipeableCard';
+import SwipeableCard from './SwipeableCard';
 
 interface CardStackProps {
   currentItem: CardItem;
@@ -28,6 +28,8 @@ export const CardStack: React.FC<CardStackProps> = ({
   canSwipeUp,
   canSwipeDown,
 }) => {
+  console.log('Rendering CardStack with currentIndex:', currentIndex);
+
   return (
     <View style={styles.container}>
       {nextItem && (
