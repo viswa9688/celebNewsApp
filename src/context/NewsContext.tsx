@@ -8,7 +8,7 @@ const mockData: NewsItem[] = [
     description: 'The latest blockbuster from King Khan sets new benchmarks in Indian cinema.',
     imageUrl: 'https://picsum.photos/800/600',
     isVideo: false,
-    fullContent: 'Shah Rukh Khan latest release "Jawan" has shattered all previous box office records, collecting over ₹1000 crores globally. The movie has been praised for its unique storyline and powerful performances.',
+    fullContent: 'Shah Rukh Khan latest release "Jawan" has shattered all previous box office records, collecting over ₹1000 crores globally.The movie has been praised for its unique storyline and powerful performances.',
   },
   {
     id: '2',

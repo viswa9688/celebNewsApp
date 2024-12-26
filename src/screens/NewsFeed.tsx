@@ -4,7 +4,7 @@ import { useNews } from '../context/NewsContext';
 import NewsCard from '../components/NewsCard';
 import type { NewsFeedScreenProps } from '../types/navigation';
 
-const NewsFeed: React.FC<NewsFeedScreenProps> = ({ navigation }) => {
+const NewsFeed = ({ navigation }: NewsFeedScreenProps) => {
   const { newsItems } = useNews();
 
   const handlePress = (id: string) => {

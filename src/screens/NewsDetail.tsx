@@ -9,53 +9,59 @@ import {
 } from 'react-native';
 import { useNews } from '../context/NewsContext';
 import VideoOverlay from '../components/VideoOverlay';
-import { useSwipeNavigation } from '../hooks/useSwipeNavigation';
+import { SwipeableCard } from '../components/SwipeableCard';
 import type { NewsDetailScreenProps } from '../types/navigation';
 
-const NewsDetail: React.FC<NewsDetailScreenProps> = ({ route, navigation }) => {
+const NewsDetail = ({ route, navigation }: NewsDetailScreenProps) => {
   const { id } = route.params;
   const { getNewsItem, newsItems } = useNews();
   const newsItem = getNewsItem(id);
 
-  const getCurrentIndex = () => newsItems.findIndex(item => item.id === id);
+  const currentIndex = newsItems.findIndex(item => item.id === id);
+  const canSwipeUp = currentIndex < newsItems.length - 1;
+  const canSwipeDown = currentIndex > 0;
 
-  const navigateToNews = (index: number) => {
-    if (index >= 0 && index < newsItems.length) {
-      navigation.setParams({ id: newsItems[index].id });
+  const handleSwipeUp = () => {
+    if (canSwipeUp) {
+      const nextItem = newsItems[currentIndex + 1];
+      navigation.setParams({ id: nextItem.id });
     }
   };
 
-  const handleSwipeUp = () => {
-    const nextIndex = getCurrentIndex() + 1;
-    navigateToNews(nextIndex);
-  };
-
   const handleSwipeDown = () => {
-    const prevIndex = getCurrentIndex() - 1;
-    navigateToNews(prevIndex);
+    if (canSwipeDown) {
+      const prevItem = newsItems[currentIndex - 1];
+      navigation.setParams({ id: prevItem.id });
+    }
   };
-
-  const panResponder = useSwipeNavigation(handleSwipeUp, handleSwipeDown);
 
   if (!newsItem) return null;
 
   return (
-    <View style={styles.container} {...panResponder.panHandlers}>
-      <ScrollView bounces={false}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: newsItem.imageUrl }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-          {newsItem.isVideo && <VideoOverlay />}
-        </View>
-        <View style={styles.content}>
-          <Text style={styles.title}>{newsItem.title}</Text>
-          <Text style={styles.description}>{newsItem.description}</Text>
-          <Text style={styles.fullContent}>{newsItem.fullContent}</Text>
-        </View>
-      </ScrollView>
+    <View style={styles.container}>
+      <SwipeableCard
+        onSwipeUp={handleSwipeUp}
+        onSwipeDown={handleSwipeDown}
+        canSwipeUp={canSwipeUp}
+        canSwipeDown={canSwipeDown}
+        index={currentIndex}
+      >
+        <ScrollView bounces={false}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: newsItem.imageUrl }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+            {newsItem.isVideo && <VideoOverlay />}
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.title}>{newsItem.title}</Text>
+            <Text style={styles.description}>{newsItem.description}</Text>
+            <Text style={styles.fullContent}>{newsItem.fullContent}</Text>
+          </View>
+        </ScrollView>
+      </SwipeableCard>
     </View>
   );
 };
@@ -63,7 +69,7 @@ const NewsDetail: React.FC<NewsDetailScreenProps> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f8f8',
   },
   imageContainer: {
     height: Dimensions.get('window').height * 0.4,
@@ -74,6 +80,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
