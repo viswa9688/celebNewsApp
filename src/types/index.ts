@@ -6,3 +6,8 @@ export interface NewsItem {
   isVideo: boolean;
   fullContent: string;
 }
+
+export interface CardItem {
+  id: string;
+  children: React.ReactNode;
+}

@@ -8,7 +8,12 @@ const NewsFeed = ({ navigation }: NewsFeedScreenProps) => {
   const { newsItems } = useNews();
 
   const handlePress = (id: string) => {
-    navigation.navigate('NewsDetail', { id });
+    const index = newsItems.findIndex(item => item.id === id);
+    navigation.navigate('NewsDetail', {
+      id,
+      newsItems,
+      index
+    });
   };
 
   return (
