@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Celebrity News Feed",
+    "slug": "celebrity-news-feed",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "mysupabaseapp",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.celebritynewsfeed"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.yourcompany.celebritynewsfeed"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

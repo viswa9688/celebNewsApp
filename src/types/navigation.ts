@@ -8,6 +8,7 @@ export type RootStackParamList = {
     newsItems: NewsItem[];
     index: number;
   };
+  Auth: undefined;
 };
 
 export type NewsDetailScreenProps = NativeStackScreenProps<
@@ -18,4 +19,9 @@ export type NewsDetailScreenProps = NativeStackScreenProps<
 export type NewsFeedScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'NewsFeed'
+>;
+
+export type AuthScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Auth'
 >;
