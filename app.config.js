@@ -19,11 +19,17 @@ export default {
       supportsTablet: true
     },
     android: {
+      package: "com.yourcompany.celebritynewsfeed",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#ffffff"
       }
     },
-    newArchEnabled: true
+    newArchEnabled: true,
+    extra: {
+      eas: {
+        projectId: "6315e216-fd2a-49f9-9904-5488423fd63e"
+      }
+    }
   }
 }
