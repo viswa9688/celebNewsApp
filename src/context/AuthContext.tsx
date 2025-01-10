@@ -19,20 +19,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
 
   const refreshSession = async () => {
-    const { data: { session: newSession }, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error('Error refreshing session:', error);
-      return;
-    }
-    if (newSession) {
-      setSession(newSession);
-      setUser(newSession.user);
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', newSession.user.id)
-        .single();
-      setProfile(profileData);
+    try {
+      const { data: { session: newSession }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.log('Session refresh error:', error);
+        // Clear invalid session data
+        await supabase.auth.signOut();
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        return;
+      }
+
+      if (newSession) {
+        setSession(newSession);
+        setUser(newSession.user);
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', newSession.user.id)
+          .single();
+        setProfile(profileData);
+      }
+    } catch (error) {
+      console.error('Error in refreshSession:', error);
+      // Clear session on error
+      setSession(null);
+      setUser(null);
+      setProfile(null);
     }
   };
 

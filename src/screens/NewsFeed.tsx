@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useNews } from '../context/NewsContext';
 import NewsCard from '../components/NewsCard';
 import type { NewsFeedScreenProps } from '../types/navigation';
@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 
 const NewsFeed = ({ navigation }: NewsFeedScreenProps) => {
   const { newsItems } = useNews();
-  const { signOut, profile } = useAuth();
+  const { signOut } = useAuth();
 
   const handlePress = (id: string) => {
     const index = newsItems.findIndex(item => item.id === id);
@@ -21,8 +21,15 @@ const NewsFeed = ({ navigation }: NewsFeedScreenProps) => {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    navigation.replace('Auth');
+    try {
+      console.log('Starting sign out...');
+      await signOut();
+      console.log('Sign out successful');
+      navigation.replace('Auth');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      Alert.alert('Error', 'Failed to sign out');
+    }
   };
 
   React.useLayoutEffect(() => {
@@ -35,9 +42,8 @@ const NewsFeed = ({ navigation }: NewsFeedScreenProps) => {
           <Ionicons name="log-out-outline" size={24} color="#FF2D55" />
         </TouchableOpacity>
       ),
-      headerTitle: profile?.role.toUpperCase() ?? 'Celebrity News',
     });
-  }, [navigation, profile]);
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
